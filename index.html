@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CCDV-F · Module 2 Practice Exam</title>
+<style>
+:root{font:16px/1.55 system-ui,sans-serif;color:#202544;background:#f3f5ff;--blue:#3935ad;--border:#dce0f2;--muted:#565e7a}
+*{box-sizing:border-box}body{margin:0}header{background:#20204b;color:white;padding:1rem max(1rem, calc((100% - 1080px)/2));display:flex;align-items:center;justify-content:space-between;gap:1rem;position:sticky;top:0;z-index:1}
+header strong{letter-spacing:.045em}main{max-width:1112px;margin:auto;padding:clamp(1rem,4vw,3rem) 1rem}h1,h2,h3,p{margin-top:0}h1{font-size:clamp(2rem,6vw,3.5rem);line-height:1.05;letter-spacing:-.05em;margin-bottom:1rem}h2{font-size:clamp(1.2rem,3vw,1.65rem);line-height:1.35}p{color:var(--muted)}
+.card{background:white;padding:clamp(1.15rem,4vw,2.4rem);border:1px solid var(--border);border-radius:22px;box-shadow:0 12px 36px #252a6610}.start,.result{max-width:760px;margin:auto}.tag{color:var(--blue);font-weight:750;font-size:.78rem;text-transform:uppercase;letter-spacing:.1em}.facts{display:flex;flex-wrap:wrap;gap:.6rem;margin:1.4rem 0}.facts span{padding:.5rem .8rem;border-radius:10px;background:#edeeff;color:#333082;font-weight:650}label{font-weight:650}input[type=text]{display:block;width:100%;padding:.85rem;margin:.35rem 0 1rem;border:1px solid #a4abcb;border-radius:10px;font:inherit}button{font:inherit;font-weight:700;cursor:pointer;border:1px solid var(--border);border-radius:10px;padding:.63rem .9rem;color:#292678;background:white}button.primary{background:var(--blue);color:white;border-color:var(--blue)}button:hover{border-color:var(--blue)}button:disabled{opacity:.47;cursor:default}button:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid #756cf3;outline-offset:3px}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 260px;gap:1rem;align-items:start}.side{padding:1rem}.grid{display:grid;grid-template-columns:repeat(6,1fr);gap:.35rem}.grid button{padding:.35rem 0}.grid .answered{background:#def3ea;color:#115a44}.grid .flagged{box-shadow:inset 0 -3px #d28b17}.grid [aria-current=true]{outline:2px solid var(--blue);outline-offset:1px}.question{-webkit-user-select:none;user-select:none}.option{display:flex;gap:.7rem;align-items:baseline;border:1px solid var(--border);padding:.75rem;border-radius:12px;margin:.55rem 0;cursor:pointer;font-weight:500}.option:has(input:checked){background:#eeedff;border-color:var(--blue)}.option input{accent-color:var(--blue);flex:none}.controls{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:1.2rem}.timer{font-variant-numeric:tabular-nums;font-weight:750;background:#ffffff20;border-radius:8px;padding:.2rem .55rem;white-space:nowrap}.timer.urgent{background:#88352b}.score{font-size:clamp(2.5rem,8vw,4rem);font-weight:850;line-height:1.1;margin:.2rem 0;color:var(--blue)}.row{display:grid;grid-template-columns:1fr auto;gap:.25rem 1rem;padding:.75rem 0;border-bottom:1px solid var(--border)}progress{width:100%;grid-column:1/-1;accent-color:var(--blue)}details{margin-top:1rem;border:1px solid var(--border);border-radius:10px;padding:.65rem .8rem}summary{cursor:pointer;font-weight:700}.review{padding:.7rem 0;border-bottom:1px solid var(--border)}.review p{margin:.25rem 0}.note{font-size:.9rem}.error{color:#a12320;margin:.45rem 0}dialog{border:1px solid var(--border);border-radius:18px;padding:1.5rem;width:min(440px,calc(100% - 2rem));color:inherit}dialog::backdrop{background:#15152c99}[hidden]{display:none!important}
+@media(max-width:760px){.layout{grid-template-columns:1fr}.grid{grid-template-columns:repeat(9,1fr)}}
+</style>
+</head>
+<body>
+<header><strong>CCDV-F · Practice Exam</strong><span id="timer" class="timer" aria-label="Time remaining" role="timer" hidden></span></header>
+<main>
+<section id="start" class="card start">
+<p class="tag">Module 2</p><h1>Applications and Integration</h1>
+<div class="facts"><span>53 questions</span><span>120 minutes</span><span>Instant results</span></div>
+<p>Choose one answer unless a question asks for two. You can revisit questions before submitting. When time runs out, the exam submits automatically.</p>
+<form id="entry"><label for="name">Full name</label><input id="name" type="text" autocomplete="name" maxlength="120" required placeholder="Enter your full name"><button class="primary">Start exam</button></form>
+<p class="note" style="margin:.9rem 0 0">Practice questions and scores are for self-assessment. Your name and answers stay in this browser.</p>
+</section>
+<section id="exam" class="layout" hidden>
+<article class="card">
+<div class="question" id="question"><p id="number" class="tag"></p><h2 id="prompt" tabindex="-1"></h2><p id="instruction" class="note"></p><div id="choices" role="group" aria-labelledby="prompt" aria-describedby="instruction"></div></div>
+<p id="feedback" class="error" role="status" hidden></p>
+<div class="controls"><button id="prev">Previous</button><button id="next" class="primary">Next question</button><button id="flag" aria-pressed="false">Flag for review</button></div>
+</article>
+<aside class="card side"><h3>Question navigator</h3><p id="progress" class="note"></p><div id="nav" class="grid"></div><p class="note" style="margin:.7rem 0">Green = answered · Gold line = flagged</p><button id="submit" class="primary">Submit exam</button></aside>
+</section>
+<section id="result" class="card result" hidden>
+<p class="tag">Exam submitted</p><h1 id="resultTitle" tabindex="-1">Your assessment</h1>
+<p id="candidate"></p><div id="score" class="score"></div><p id="scoreMeta"></p><p id="assessment"></p>
+<h2>Performance by objective</h2><div id="breakdown"></div>
+<details><summary>Review answers and explanations</summary><div id="review"></div></details>
+<div class="controls"><button id="restart">Start a new attempt</button></div>
+</section>
+<dialog id="confirm"><h2>Submit exam?</h2><p id="confirmText"></p><form method="dialog" class="controls"><button value="cancel" autofocus>Keep working</button><button class="primary" value="submit">Submit and see results</button></form></dialog>
+</main>
+<script>
+const topics = ['Understanding Requirements','Systems Life Cycle','Claude API Mechanics','Software Engineering Foundations','Claude Application Design','Configuration Management'];
+// Questions use: prompt | options A–D | correct letters | explanation.
+const bank = [
+[
+'How should a support team measure the business impact of a ticket-sorting assistant?|Count Claude requests|Compare triage time and routing errors before and after launch|Measure explanation length|Count configured queues|B|Triage time measures the goal, while routing errors measure the quality of the outcome.',
+'A supervisor must approve each refund. Which functional requirement should engineers implement?|Improve customer trust|Load the refund screen in two seconds|Verify valid supervisor approval before sending the refund|Store billing credentials securely in the runtime|C|Checking approval before submitting a refund is a behavior the application must perform.',
+'A ticket assistant reads a private system. Which requirement concerns infrastructure?|The runtime needs approved connectivity and credentials for the ticket API|The assistant must label each ticket|Staff must be able to override suggestions|The team should spend less time sorting tickets|A|Connectivity and credentials enable the deployed integration to operate.',
+'Personal identifiers must be removed before a message reaches Claude. Which actions implement that rule?|Redact the generated summary|Redact in the backend before the model request|Ask Claude to ignore identifiers in the original message|Skip the model request and offer manual handling if redaction fails|BD|Redaction must happen before sending data, and failure must stop that transfer.',
+'The manager wants a fast assistant. Which question makes that goal testable?|How long should the source code be?|Who owns the interface?|How many fields should come back?|What response time is acceptable at the expected request load?|D|A timing target and a load condition give the team a measurable acceptance criterion.'
+],[
+'Which step best verifies a new assistant just before release?|Test normal and failure paths in staging|Create the on-call rota|Plan a production latency dashboard|Schedule a future SDK upgrade|A|A production-like staging environment lets the team exercise the integration before release.',
+'Production responses suddenly take twice as long. What should you check first?|Compare staging and production colors|Inspect timing for each backend dependency|Correlate the slowdown with recent releases|Upgrade the prompt and SDK together|BC|Component timings localize the delay, and change history points to candidate causes.',
+'What is the strongest plan for upgrading a working assistant’s SDK?|Upgrade production and check notes if it fails|Confirm only that the app starts|Upgrade the SDK and model together and count requests|Test representative cases, monitor rollout, and retain a rollback path|D|Representative tests and monitoring reveal regressions. Rollback makes recovery possible.',
+'Which action belongs in decommissioning an old assistant?|Hide its link and leave jobs running|Stop traffic and jobs, revoke unused credentials, and follow retention policy|Transfer all permissions to the new app|Delete the logs and then check them for remaining use|B|Retirement includes traffic, background work, access, and data retention.',
+'How should a new assistant be rolled out to 500 employees while limiting initial impact?|Release to everyone and rely on support tickets|Pilot it but wait until the full rollout to review findings|Start with a small group and expand after measured checks pass|Release to everyone and reduce logging|C|A monitored pilot reduces the number of people affected by early issues.'
+],[
+'With standalone Messages API requests, the user asks “What about the second option?” What should the app send?|A higher output limit|The relevant earlier conversation messages|The previous request ID in the user text|A shorter system instruction alone|B|Earlier messages supply the context that identifies the second option.',
+'Claude requests the client tool lookupOrder. What should the app do?|Display the arguments as the final reply|Wait for Claude to access the private order service directly|Remove the tool and repeat the prompt|Validate the arguments, run the permitted lookup, and return its matching tool result|D|Application code executes a client tool and associates the result with the request.',
+'An employee wants the reply to appear as Claude generates it. What fits?|Message Batches|Repeated standard requests|Streaming response events|Caching followed by one complete update|C|Streaming gives the app incremental events it can display.',
+'A stream cuts out halfway through a reply. How should the UI handle it?|Mark the reply as interrupted|Mark it complete because output started|Offer a retry or a recovery action|Append a fresh reply and label it the original|AC|Show the incomplete state clearly and offer a way to recover.',
+'An image-capable Claude model needs to inspect a product photo. What should the request contain?|The filename in the system instructions|An image content block alongside the question|The dimensions and file type alone|A storage path in the response schema|B|The model needs the image as an input content block.',
+'Thousands of files need classification overnight. Volume and cost matter, and results can wait. Which approach fits?|Stream a live response for every file|Send standard requests with shorter output limits|Ask for one classification covering all files|Submit Message Batches and track individual request identifiers|D|Batches fit asynchronous workloads, and identifiers link results to requests.',
+'Every request contains the same long policy and a different customer message. Which layout supports prompt-cache reuse?|Place the stable policy before the varying text and set an appropriate cache boundary|Put varying text before the stable policy|Insert a fresh timestamp before the policy on every call|Reuse the previous customer’s answer|A|Prompt caching can reuse an eligible common prefix.',
+'When changing Claude providers, what should the team verify?|Whether browsers can parse JSON|Authentication and model identifiers|Whether provider staff use the same ticket categories|Whether the required models and API features are available|BD|Credentials, identifiers, and feature support can vary across providers.',
+'The Claude API returns HTTP 429 during a spike. How should the app respond?|Retry immediately from multiple workers|Rotate the key on the first 429|Honor available retry guidance, use bounded backoff, and limit concurrency|Increase the output limit|C|Controlled retries avoid adding load when requests are rate-limited.',
+'Claude returns stop_reason max_tokens and stops mid-sentence. What does that indicate?|The output limit was reached and the result may be incomplete|The model declared the task complete|A client tool must run next|The cache must be cleared|A|The output hit its budget, so the app should account for truncation.',
+'The team enables more thinking for document reviews. What should it compare?|JavaScript bundle size|HTTP header order|Key expiry|Quality, latency, and token usage|D|Those measurements show whether the gain justifies the added work.'
+],[
+'Which HTTP method retrieves a ticket without updating it?|POST|GET|PATCH|PUT|B|GET is designed to retrieve a resource.',
+'Payment lookup requires a reference returned by order lookup. What sequence works?|Start payment lookup with no reference|Run both and ignore errors|Await and validate the order reference, then look up payment|Retry both until the responses match|C|The second request depends on data returned by the first.',
+'Shipping and invoice lookups both accept the order ID already in hand. How can you reduce waiting time?|Run them concurrently with defined failure handling|Delay the second lookup until both return|Run them sequentially with longer timeouts|Load all order history first|A|The requests have no dependency on each other.',
+'The API expects priority to be low or high but receives valid JSON with priority set to 42. What should happen?|Accept it because JSON parsing worked|Convert 42 to a string and save|Forward it to downstream storage|Reject it at the boundary because it violates the schema|D|JSON syntax and field validity are separate checks.',
+'A pull request puts the secret Claude API key into JavaScript sent to browsers. What should the reviewer flag?|The key should have a clearer variable name|Browser users can read distributed secrets, so move the Claude call behind the backend|Start the request sooner|Store the key in local storage|B|The server is the appropriate place to keep a shared secret credential.',
+'Claude Code refactors a working endpoint. What checks verify that behavior is preserved?|Count the lines|Run normal and error-case tests|Review the diff for contract changes|Check that the directory layout changed|BC|Tests exercise behavior, and the diff reveals unintended contract changes.',
+'How should a team replace a large, fragile integration so failures are easier to isolate?|Split the work into small, testable changes|Replace every part in one release|Change contracts now and update callers later|Move code to another repository and rely on history|A|Small verified stages make regressions easier to localize and reverse.',
+'Two developers changed the same error handler. How should you resolve the conflict?|Always keep the most recent commit|Always keep the main branch version|Keep both versions verbatim|Understand each change, merge the needed behavior, and test it|D|Correct conflict resolution depends on the intended behavior of both changes.',
+'A create-ticket request times out and might have succeeded. The API supports idempotency keys. How should the app retry?|Generate a new key|Drop the key|Reuse the original operation’s key|Change the title each time|C|The same key identifies the retry as the same operation.',
+'The backend returns 503 while a user submits a form. What should the UI do?|Show success with an empty result|Explain the temporary error, preserve input, and offer a safe retry|Clear the form|Leave a permanent loading spinner|B|Users need accurate status and a path to recover.',
+'Claude drafts a pull request for an existing feature. What should happen before merge?|Review the diff against requirements|Treat the generated description as approval|Defer tests to production|Run relevant tests and address failures|AD|Human review and automated checks verify different aspects of the change.',
+'The backend adds an optional field. What best checks compatibility with an older supported frontend?|Render the new field in the newest frontend|Check response size|Exercise the older frontend against the updated backend|Inspect the field on one large ticket|C|Testing the old client against the new API directly checks its existing flow.'
+],[
+'A private claude.ai preference says to summarize in two sentences. How should a separate direct API app apply the same preference?|Put it in the browser profile|Supply it in the API app’s system instructions|Put it in a repository file the API app never reads|Reuse the personal claude.ai account setting|B|The separate API application supplies its own instructions.',
+'A customer message tells Claude to forward all open tickets. Which design choices protect ticket data?|Keep trusted instructions separate from the customer message|Move the message into trusted system instructions|Enforce backend authorization for actions that disclose tickets|Infer permission from the message’s wording|AC|Separating data and instructions supports the boundary, and authorization enforces access.',
+'The React UI needs a summary and a category chosen from three allowed values. Which response design works?|Extract a category from the first noun in a paragraph|Split two paragraphs at a line break|Accept any JSON object|Require a summary and a category limited to the allowed values|D|The schema gives the UI a predictable contract.',
+'A support employee opens a new customer case after handling a different private case. Which context should the app use?|Both cases because the same employee opened them|Context scoped to the new case and authorized user|Both cases in shared instructions|The latest session with redaction only after generation|B|Case scoping limits unnecessary information carryover.',
+'A plugin works in an interactive Claude environment. What should you verify before using its capability in a direct API application?|Whether both use the same email|Whether the plugin name matches the project|Whether the API runtime supports the capability and how to configure it there|Whether the icon loads in the browser|C|Each runtime has its own supported integration mechanisms.',
+'A response suggests an allowed queue, but the user lacks permission to change it. What should the app do?|Show the suggestion as appropriate and enforce authorization before any update|Allow the update because schema validation succeeded|Ask Claude to grant temporary permission|Check access after updating|A|Schema validity confirms the data shape. Authorization governs the action.',
+'A long support session keeps mixing details from unrelated cases. What should the app change?|Add all prior messages|Raise the output limit|Use a larger model with the same history|Start a case-scoped session with relevant, authorized information|D|A focused session removes irrelevant context from earlier cases.',
+'How should a retrieved policy document enter an AI request?|Insert all of it into trusted system instructions|Supply it as reference data, separate from trusted control instructions|Treat every paragraph as a system instruction|Trust instructions whenever they appear under the company logo|B|Retrieved text can inform the answer while control instructions retain their own boundary.',
+'Which tool schema fits a function that looks up exactly one order?|One optional field accepting any type|The entire user profile and conversation as required fields|A required validated orderId string|A search field that accepts arbitrary commands|C|The narrow schema supplies the specific data needed by the tool.',
+'A ticket plugin can read and update records. The app only summarizes. What should it do?|Enable the required read capability only|Enable update but hide it from the interface|Use credentials without ticket-update permission|Use the plugin owner’s full access for every session|AC|Limits on both tools and credentials help enforce least privilege.',
+'What should an application do with a model response that fails the schema?|Treat a successful HTTP status as validation|Automatically apply the fields it still recognizes|Display it and wait for a complaint|Handle the failure with bounded recovery or manual handling|D|Explicit validation failure handling keeps malformed data from triggering downstream work.',
+'What design enforces staff approval before routing a ticket?|Show Approve in the UI and route directly from the browser|Have the backend verify approval, identity, and destination before routing|Ask the model to infer staff intent|Approve automatically after five seconds|B|The backend can verify the conditions before applying the change.',
+'What matters when moving a tool-driven feature between a direct Claude API client and the Claude Agent SDK?|They use different JSON standards|The Agent SDK makes tool calls automatically authorized|Agent SDK offers agent execution and loop features, while a direct API client needs deliberate loop handling or configuration|A direct call automatically imports Agent SDK permissions|C|The integration choice changes how tool orchestration is managed.',
+'Which responsibility belongs to the Node.js backend of a ticket assistant?|Check access, hold the API credential, and validate results before acting|Style the form and animate its loading indicator|Infer user permissions from a ticket’s wording|Use model output to grant ticket access|A|The backend protects the credential and enforces access and application rules.'
+],[
+'Where should a repository put its coding conventions and test commands for Claude Code?|A response schema|The API credential file|One teammate’s private conversation|The repository CLAUDE.md file|D|CLAUDE.md provides project-specific working instructions.',
+'Where does a shareable project-wide Claude Code setting belong?|A developer’s home-directory settings file|The repository’s .claude/settings.json|An individual local override|A Messages API prompt|B|Project settings can be shared through the repository.',
+'Which choices help isolate the effects of a future model update?|Pin a supported model version where available|Change prompts together with the model|Record model and prompt versions and reuse the evaluation inputs|Use different test cases each time|AC|Pinned, recorded configuration and consistent test data make comparison easier.',
+'A prompt update harms classification. What practice makes a targeted rollback possible?|Overwrite the old prompt everywhere|Roll back the whole repository immediately|Edit the prompt separately on each host|Keep deployable prompt versions and record the active one|D|Versioned prompts allow restoration of a known configuration.',
+'A plugin works locally but staging reports an incompatible dependency. What should you check first?|Locked plugin and dependency versions plus runtime compatibility|CSS bundle versions|The number of prompt examples|The max output token limit|A|The failure concerns the runtime dependency chain.',
+'A release changes the model, prompt, and plugin and worsens classification. How could you isolate the cause?|Switch to a larger model immediately|Record exact versions used in each deployment|Compare results on entirely different categories|Reproduce on the same evaluation inputs while changing one component at a time|BD|Version records enable reproduction, and controlled changes identify the likely cause.'
+]];
+const questions = bank.flatMap((group,topic) => group.map(line => {
+  const [prompt,...fields] = line.split('|');
+  return {topic,prompt,options:fields.slice(0,4),key:fields[4],why:fields[5]};
+}));
+const letters = 'ABCD';
+const duration = 120 * 60 * 1000;
+const storageKey = 'ccdv-f-module2-attempt-v1';
+const $ = id => document.getElementById(id);
+let attempt = null;
+let timer;
+function save() { try { localStorage.setItem(storageKey,JSON.stringify(attempt)); } catch {} }
+function restore() {
+  try {
+    const data = JSON.parse(localStorage.getItem(storageKey));
+    if (data && typeof data.name === 'string' && Number.isFinite(data.started) &&
+        Array.isArray(data.answers) && data.answers.length === questions.length &&
+        data.answers.every(answer => typeof answer === 'string' && /^[A-D]{0,2}$/.test(answer)) &&
+        Array.isArray(data.flags) && data.flags.length === questions.length &&
+        Number.isInteger(data.index) && data.index >= 0 && data.index < questions.length) return data;
+  } catch {}
+  return null;
+}
+function show(screen) {
+  for (const id of ['start','exam','result']) $(id).hidden = id !== screen;
+  $('timer').hidden = screen !== 'exam';
+}
+function answered(index) { return attempt.answers[index].length === questions[index].key.length; }
+function grade(answers) {
+  return questions.map((question,index) => answers[index] === question.key);
+}
+function tick() {
+  if (!attempt || attempt.finished) return;
+  const seconds = Math.max(0,Math.ceil((attempt.started + duration - Date.now()) / 1000));
+  $('timer').textContent = [Math.floor(seconds / 3600),Math.floor(seconds / 60) % 60,seconds % 60].map(value => String(value).padStart(2,'0')).join(':');
+  $('timer').classList.toggle('urgent',seconds <= 300);
+  if (!seconds) finish(true);
+}
+function renderNavigator() {
+  const count = questions.filter((_,index) => answered(index)).length;
+  $('progress').textContent = count + ' of ' + questions.length + ' answered';
+  Array.from($('nav').children).forEach((button,index) => {
+    button.classList.toggle('answered',answered(index));
+    button.classList.toggle('flagged',attempt.flags[index]);
+    button.setAttribute('aria-current',String(index === attempt.index));
+    button.setAttribute('aria-label','Question ' + (index + 1) + (answered(index) ? ', answered' : ', incomplete') + (attempt.flags[index] ? ', flagged' : ''));
+  });
+}
+function renderQuestion(focus = false) {
+  const index = attempt.index;
+  const question = questions[index];
+  const multiple = question.key.length === 2;
+  $('number').textContent = 'Question ' + (index + 1) + ' of ' + questions.length;
+  $('prompt').textContent = question.prompt;
+  $('instruction').textContent = multiple ? 'Select TWO answers.' : 'Select one answer.';
+  $('feedback').hidden = true;
+  $('choices').replaceChildren();
+  question.options.forEach((option,i) => {
+    const label = document.createElement('label');
+    label.className = 'option';
+    const input = document.createElement('input');
+    input.type = multiple ? 'checkbox' : 'radio';
+    input.name = 'answer';
+    const letter = letters[i];
+    input.checked = attempt.answers[index].includes(letter);
+    input.addEventListener('change', () => {
+      tick();
+      if (attempt.finished) return;
+      let selected = attempt.answers[index];
+      if (multiple && input.checked && selected.length === 2) {
+        input.checked = false;
+        $('feedback').textContent = 'Deselect one answer before selecting another.';
+        $('feedback').hidden = false;
+        return;
+      }
+      $('feedback').hidden = true;
+      if (multiple) selected = input.checked ? (selected + letter).split('').sort().join('') : selected.replace(letter,'');
+      attempt.answers[index] = multiple ? selected : letter;
+      save();
+      renderNavigator();
+    });
+    const wording = document.createElement('span');
+    wording.textContent = letter + '. ' + option;
+    label.append(input,wording);
+    $('choices').append(label);
+  });
+  $('prev').disabled = index === 0;
+  $('next').textContent = index === questions.length - 1 ? 'Review and submit' : 'Next question';
+  $('flag').textContent = attempt.flags[index] ? 'Remove flag' : 'Flag for review';
+  $('flag').setAttribute('aria-pressed',String(attempt.flags[index]));
+  renderNavigator();
+  if (focus) $('prompt').focus();
+}
+function go(index) {
+  tick();
+  if (attempt.finished || index < 0 || index >= questions.length) return;
+  attempt.index = index;
+  save();
+  renderQuestion(true);
+  window.scrollTo(0,0);
+}
+function begin() {
+  show('exam');
+  const buttons = questions.map((_,index) => {
+    const button = document.createElement('button');
+    button.textContent = index + 1;
+    button.addEventListener('click',() => go(index));
+    return button;
+  });
+  $('nav').replaceChildren(...buttons);
+  tick();
+  if (attempt.finished) return;
+  renderQuestion(true);
+  timer = setInterval(tick,250);
+}
+function requestSubmit() {
+  tick();
+  if (attempt.finished) return;
+  const incomplete = questions.filter((_,index) => !answered(index)).length;
+  $('confirmText').textContent = incomplete
+    ? incomplete + ' question(s) are unanswered or incomplete. Submit this attempt and see your results?'
+    : 'All questions are answered. Submit this attempt and see your results?';
+  $('confirm').showModal();
+}
+function finish(expired) {
+  if (attempt.finished) return;
+  attempt.finished = Math.min(Date.now(),attempt.started + duration);
+  attempt.expired = expired;
+  clearInterval(timer);
+  if ($('confirm').open) $('confirm').close('cancel');
+  save();
+  results();
+}
+function results() {
+  show('result');
+  const marks = grade(attempt.answers);
+  const total = marks.filter(Boolean).length;
+  const percentage = Math.round(total / questions.length * 100);
+  const completed = questions.filter((_,index) => answered(index)).length;
+  const minutes = Math.max(0,Math.floor((attempt.finished-attempt.started)/60000));
+  $('candidate').textContent = attempt.name + ' · ' + (attempt.expired ? 'Automatically submitted when time expired' : 'Submitted');
+  $('score').textContent = total + ' / ' + questions.length;
+  $('scoreMeta').textContent = percentage + '% · ' + completed + ' fully answered · ' + minutes + ' min elapsed · Raw practice score';
+  const breakdown = topics.map((title,topic) => {
+    const indices = questions.flatMap((q,i) => q.topic === topic ? [i] : []);
+    return {title,score:indices.filter(i => marks[i]).length,max:indices.length};
+  });
+  const weakest = [...breakdown].sort((a,b) => a.score/a.max-b.score/b.max)[0];
+  $('assessment').textContent = total === questions.length
+    ? 'You earned full marks across all six objectives.'
+    : 'Start your review with ' + weakest.title + ' (' + weakest.score + '/' + weakest.max + '). Open the answer review to see the reasoning for each item.';
+  const rows = breakdown.map(item => {
+    const row = document.createElement('div');
+    row.className = 'row';
+    const label = document.createElement('strong');
+    label.textContent = item.title;
+    const score = document.createElement('span');
+    score.textContent = item.score + '/' + item.max;
+    const bar = document.createElement('progress');
+    bar.max = item.max;
+    bar.value = item.score;
+    bar.setAttribute('aria-label',item.title);
+    row.append(label,score,bar);
+    return row;
+  });
+  $('breakdown').replaceChildren(...rows);
+  const reviews = questions.map((question,index) => {
+    const row = document.createElement('div');
+    row.className = 'review';
+    const title = document.createElement('strong');
+    title.textContent = (index + 1) + '. ' + question.prompt;
+    const picked = document.createElement('p');
+    const describe = values => [...values].map(letter => letter + '. ' + question.options[letters.indexOf(letter)]).join(' · ');
+    picked.textContent = (marks[index] ? 'Correct' : 'No credit') + ' · Your answer: ' + (describe(attempt.answers[index]) || 'Unanswered');
+    const correct = document.createElement('p');
+    correct.textContent = 'Correct answer: ' + describe(question.key);
+    const reason = document.createElement('p');
+    reason.textContent = question.why;
+    row.append(title,picked,correct,reason);
+    return row;
+  });
+  $('review').replaceChildren(...reviews);
+  $('resultTitle').focus();
+  window.scrollTo(0,0);
+}
+$('entry').addEventListener('submit',event => {
+  event.preventDefault();
+  const name = $('name').value.trim().replace(/\s+/g,' ');
+  if (!name) {
+    $('name').setCustomValidity('Enter your full name to continue.');
+    $('name').reportValidity();
+    return;
+  }
+  attempt = {name,started:Date.now(),index:0,answers:questions.map(() => ''),flags:questions.map(() => false)};
+  save();
+  begin();
+});
+$('name').addEventListener('input',() => $('name').setCustomValidity(''));
+$('prev').addEventListener('click',() => go(attempt.index-1));
+$('next').addEventListener('click',() => attempt.index === questions.length-1 ? requestSubmit() : go(attempt.index+1));
+$('flag').addEventListener('click',() => {
+  tick();
+  if (!attempt.finished) {
+    attempt.flags[attempt.index] = !attempt.flags[attempt.index];
+    save();
+    renderQuestion();
+  }
+});
+$('submit').addEventListener('click',requestSubmit);
+$('confirm').addEventListener('close',() => {
+  if ($('confirm').returnValue === 'submit' && attempt && !attempt.finished) finish(Date.now() >= attempt.started + duration);
+  $('confirm').returnValue = '';
+});
+$('restart').addEventListener('click',() => {
+  attempt = null;
+  save();
+  $('name').value = '';
+  $('review').parentElement.open = false;
+  show('start');
+  $('name').focus();
+});
+for (const eventName of ['copy','cut','dragstart','contextmenu','selectstart']) {
+  $('exam').addEventListener(eventName,event => {
+    if (event.target.closest('.question') || ((eventName === 'copy' || eventName === 'cut') && !$('exam').hidden)) event.preventDefault();
+  });
+}
+attempt = restore();
+if (attempt) {
+  if (attempt.finished) results();
+  else begin();
+}
+</script>
+</body>
+</html>
